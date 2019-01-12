@@ -25,6 +25,7 @@ class MongoDBResultWorker(ResultWorker):
             logger.info('update %d datas' % len(result))
             for item in result:
                 if 'url' in item:
+                    item["source"] = task['project']
                     data_id = coll.update({'url': item['url']}, {"$set": item}, upsert=True)
                     logger.info(data_id)
         else:
