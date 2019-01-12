@@ -1,0 +1,29 @@
+#---- Mac OS X clutter ----
+*.DS_Store
+
+#---- Local config ----
+local.properties
+
+#---- Python cache ----
+__pycache__
+
+#---- Eclipse settings ----
+.settings
+.classpath
+.project
+project.properties
+lint.xml
+
+#---- Android Studio settings ----
+.idea
+build
+*.eml
+*.iml
+/*/local.properties
+/*/out
+/*/*/production
+*.iws
+*.ipr
+*~
+*.swp
+data

@@ -1,0 +1,4 @@
+pyspider
+pymongo
+redis
+fontTools
