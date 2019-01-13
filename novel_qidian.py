@@ -9,6 +9,7 @@ import requests
 from fontTools.ttLib import TTFont
 from pyspider.libs.base_handler import *
 from io import BytesIO
+import header_selector
 
 
 class Handler(BaseHandler):
@@ -20,18 +21,20 @@ class Handler(BaseHandler):
         "fetch_type": 'None',
         "auto_recrawl": False,
     }
+    headers = header_selector.HeadersSelector()
 
     @every(minutes=24 * 60)
     def on_start(self):
-        self.crawl('https://www.qidian.com/all?orderId=11', callback=self.index_page)
+        self.crawl('https://www.qidian.com/all?orderId=11', callback=self.index_page,
+                   headers=self.headers.select_header())
 
     @config(age=24 * 60 * 60)
     def index_page(self, response):
         for each in response.doc('a[href^="http"]').items():
             if re.match("https://book.qidian.com/info/\d+$", each.attr.href):
-                self.crawl(each.attr.href, callback=self.detail_page)
+                self.crawl(each.attr.href, callback=self.detail_page, headers=self.headers.select_header())
         for each in response.doc('.lbf-pagination-next').items():
-            self.crawl(each.attr.href, callback=self.index_page)
+            self.crawl(each.attr.href, callback=self.index_page, headers=self.headers.select_header())
         # 爬取每本书的收藏数
         pattern = re.compile('<div.*?book-mid-info.*?>.*?<h4>.*?href="(.*?)(?#书本链接地址)'
                              '".*?</h4>.*?</style><span.*?>((?:\&#\d+;){1,})(?#收藏数字)</span>([万]总收藏)', re.S)
